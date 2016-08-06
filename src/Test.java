@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+
+import blocks.*;
 import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.time.Day;
@@ -36,12 +38,29 @@ class Test {
     private JFreeChart createChart() {
 
         XYSeries series = new XYSeries("XYGraph");
+        XYSeries series2 = new XYSeries("XYGraph2");
+        XYSeries series3 = new XYSeries("sum");
         series.add(0, pid.tick(0, 0));
+        series2.add(0, pid.tick(0, 0));
         int maxSamples = 5000;
-        double maxTime = 0.2;
+        double maxTime = 1;
         double dt = maxTime / maxSamples;
+        BlockManager manager = new BlockManager();
+        Block constant = new Constant(1);
+        Block gain = new Gain(5, constant);
+        Block integral = new Integral(gain);
+        Block derivative = new Derivative(integral);
+        manager.addBlock(constant);
+        manager.addBlock(gain);
+        manager.addBlock(integral);
+        manager.addBlock(derivative);
+
         for (int sample = 1; sample < maxSamples; sample++) {
-            series.add(sample*dt, pid.tick(Math.sin(dt*sample*10), dt));
+//            series.add(sample*dt, pid.tick(Math.sin(dt*sample*10), dt));
+            manager.tick(dt);
+            series.add(sample*dt, gain.getOutput());
+            series2.add(sample*dt, integral.getOutput());
+            series3.add(sample*dt, derivative.getOutput());
         }
 //        series.add(1, pid.tick(1));
 //        series.add(2, pid.tick(1));
@@ -50,6 +69,8 @@ class Test {
 //        series.add(5, pid.tick(1));
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
+        dataset.addSeries(series2);
+        dataset.addSeries(series3);
         JFreeChart timechart = ChartFactory.createXYLineChart(
                 "XY Chart", // Title
                 "x",         // X-axis Label
