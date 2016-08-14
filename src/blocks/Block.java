@@ -1,10 +1,13 @@
 package blocks;
 
+import math.Matrix;
+
 import java.util.ArrayList;
 
 public abstract class Block {
 
     protected double output;
+    protected Matrix outputMatrix;
 
     protected Block inputBlock = null;
     protected ArrayList<Block> inputBlocks = new ArrayList<>();
@@ -16,5 +19,8 @@ public abstract class Block {
 
     public double getOutput() {
         return output;
+    }
+    public Matrix getOutputMatrix() {
+        return outputMatrix;
     }
 }

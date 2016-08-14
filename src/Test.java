@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 
 import blocks.*;
+import math.Matrix;
 import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.time.Day;
@@ -17,7 +18,7 @@ class Test {
 
     public Test() {
 
-        pid = new PIDController(1, 2, 0.5);
+//        pid = new PIDController(1, 2, 0.5, );
 
         frame = new JFrame("Test");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -37,30 +38,52 @@ class Test {
 
     private JFreeChart createChart() {
 
+        Double[][] A = { { 0.00,    1.00,   0.00,   0.00},
+                         { 0.00,   -2.00, 0.00,   0.00},
+                         { 0.00,    0.00,   0.00,   1.00},
+                         { 0.00,    2.00, 0.981,   0.00} };
+        Matrix aMtx = new Matrix(A);
+        Double[][] B = { {  0.00},
+                         { 10.00},
+                         {  0.00},
+                         {-10.00} };
+        Matrix bMtx = new Matrix(B);
+        Double[][] C = { { 0.00, 0.00, 1.00, 0.00 } };
+        Matrix cMtx = new Matrix(C);
+        Double[][] D = { { 0.00 } };
+        Matrix dMtx = new Matrix(D);
+
         XYSeries series = new XYSeries("XYGraph");
-        XYSeries series2 = new XYSeries("XYGraph2");
-        XYSeries series3 = new XYSeries("sum");
-        series.add(0, pid.tick(0, 0));
-        series2.add(0, pid.tick(0, 0));
+//        XYSeries series2 = new XYSeries("XYGraph2");
+//        XYSeries series3 = new XYSeries("pid");
         int maxSamples = 5000;
         double maxTime = 1;
         double dt = maxTime / maxSamples;
         BlockManager manager = new BlockManager();
         Block constant = new Constant(1);
-        Block gain = new Gain(5, constant);
-        Block integral = new Integral(gain);
-        Block derivative = new Derivative(integral);
+        Block sum = new Sum();
+        Block gain = new Gain(-1, sum);
+        Block pid = new PIDController(8.68, 13.18, 1.38, gain);
+        Block stateSpace = new StateSpace(aMtx, bMtx, cMtx, dMtx, pid);
+        Block gain2 = new Gain(-1, stateSpace);
+        sum.addInputBlock(constant);
+        sum.addInputBlock(gain2);
         manager.addBlock(constant);
+        manager.addBlock(sum);
         manager.addBlock(gain);
-        manager.addBlock(integral);
-        manager.addBlock(derivative);
+        manager.addBlock(pid);
+        manager.addBlock(stateSpace);
+        manager.addBlock(gain2);
+//        manager.addBlock(gain);
+//        manager.addBlock(pid);
 
         for (int sample = 1; sample < maxSamples; sample++) {
 //            series.add(sample*dt, pid.tick(Math.sin(dt*sample*10), dt));
             manager.tick(dt);
-            series.add(sample*dt, gain.getOutput());
-            series2.add(sample*dt, integral.getOutput());
-            series3.add(sample*dt, derivative.getOutput());
+            System.out.println(gain2.getOutput());
+            series.add(sample*dt, stateSpace.getOutput());
+//            series2.add(sample*dt, integral.getOutput());
+//            series3.add(sample*dt, pid.getOutput());
         }
 //        series.add(1, pid.tick(1));
 //        series.add(2, pid.tick(1));
@@ -69,8 +92,8 @@ class Test {
 //        series.add(5, pid.tick(1));
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
-        dataset.addSeries(series2);
-        dataset.addSeries(series3);
+//        dataset.addSeries(series2);
+//        dataset.addSeries(series3);
         JFreeChart timechart = ChartFactory.createXYLineChart(
                 "XY Chart", // Title
                 "x",         // X-axis Label
