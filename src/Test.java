@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import blocks.*;
@@ -55,13 +57,17 @@ class Test {
         modelMap.put("D", D);
         HashMap<String, Double> pidMap = new HashMap<>();
         pidMap.put("P", new Double(50));
-        pidMap.put("I", new Double(10));
-        pidMap.put("D", new Double(0.38));
+        pidMap.put("I", new Double(1));
+        pidMap.put("D", new Double(1.38));
         int maxSamples = 50000;
-        double maxTime = 5;
+        double maxTime = 1;
         DynamicModel model = new DynamicModel(modelMap, pidMap);
         Simulator simulator = new Simulator(model);
         simulator.simulate(maxSamples, maxTime);
+        ArrayList<Simulator.Result> results = simulator.getResults();
+        Evaluator evaluator = new Evaluator(results);
+        DecimalFormat df = new DecimalFormat("#.00");
+        System.out.println("Overshoot: " + df.format(evaluator.getOvershoot()*100) + "%");
         XYSeries series = simulator.getXYSeries();
 
         XYSeriesCollection dataset = new XYSeriesCollection();
