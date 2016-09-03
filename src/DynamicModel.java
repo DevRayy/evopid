@@ -25,7 +25,7 @@ public class DynamicModel {
         manager = new BlockManager();
         constant = new Constant(1);
         sum = new Sum();
-        gain = new Gain(-1, sum);
+        gain = new Gain(1, sum);
         pid = new PIDController(P, I, D, gain);
         stateSpace = new StateSpace(Amtx, Bmtx, Cmtx, Dmtx, pid);
         gain2 = new Gain(-1, stateSpace);

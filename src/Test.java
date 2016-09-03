@@ -59,15 +59,24 @@ class Test {
         pidMap.put("P", new Double(50));
         pidMap.put("I", new Double(1));
         pidMap.put("D", new Double(1.38));
-        int maxSamples = 50000;
-        double maxTime = 1;
+        int maxSamples = 5000;
+        double maxTime = 3;
+
+        Generator generator = new Generator(modelMap, maxSamples, maxTime);
+        pidMap = generator.generate(100);
+
         DynamicModel model = new DynamicModel(modelMap, pidMap);
         Simulator simulator = new Simulator(model);
         simulator.simulate(maxSamples, maxTime);
         ArrayList<Simulator.Result> results = simulator.getResults();
         Evaluator evaluator = new Evaluator(results);
         DecimalFormat df = new DecimalFormat("#.00");
+        System.out.println("\n\n===== BEST PID FOUND =====");
+        System.out.println(pidMap);
         System.out.println("Overshoot: " + df.format(evaluator.getOvershoot()*100) + "%");
+        System.out.println("Rising time: " + evaluator.getRisingTime() + " seconds");
+        System.out.println("Settling time: " + evaluator.getSettlingTime() + " seconds");
+        System.out.println("SCORE: " + evaluator.getScore());
         XYSeries series = simulator.getXYSeries();
 
         XYSeriesCollection dataset = new XYSeriesCollection();
