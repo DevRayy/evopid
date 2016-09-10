@@ -4,13 +4,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import blocks.*;
-import math.Matrix;
 import org.jfree.chart.*;
 import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.time.Day;
-import org.jfree.data.time.TimeSeries;
-import org.jfree.data.time.TimeSeriesCollection;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -39,7 +34,7 @@ class Test {
         frame.setVisible(true);
     }
 
-    private JFreeChart createChart() {
+    public JFreeChart createChart() {
         HashMap<String, Double[][]> modelMap = new HashMap<>();
         Double[][] A = { { 0.00,    1.00,   0.00,   0.00},
                          { 0.00,   -2.00, 0.00,   0.00},
@@ -97,7 +92,12 @@ class Test {
     }
 
     public static void main(String[] args) {
-        new Test();
+        JFrame frame = new JFrame("Evopid");
+        frame.setContentPane(new GuiRoot().rootPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
+
     }
 
 }
