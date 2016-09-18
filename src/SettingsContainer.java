@@ -141,12 +141,29 @@ public class SettingsContainer {
         this.D = parseStringToMatrix(base);
     }
 
+    private Double[] stringArrayToDoubleArray(String[] source) {
+        Double[] ret = new Double[source.length];
+        for(int i=0; i< source.length; i++) {
+            source[i] = source[i].replace(" ", "").replace("\n", "");
+            ret[i] = Double.parseDouble(source[i]);
+        }
+
+        return ret;
+    }
+
     private Double[][] parseStringToMatrix(String base) {
-        //TODO
-        Double[][] A = { { 0.00,    1.00,   0.00,   0.00},
-                { 0.00,   -2.00, 0.00,   0.00},
-                { 0.00,    0.00,   0.00,   1.00},
-                { 0.00,    2.00, 0.981,   0.00} };
-        return A;
+
+        String[] rows = base.split(";");
+        int rowsCount = rows.length;
+        int columnsCount = rows[0].split(",").length;
+        Double[][] ret = new Double[rowsCount][columnsCount];
+        for(int i=0; i<rowsCount; i++) {
+            String[] vals = rows[i].split(",");
+            ret[i] = stringArrayToDoubleArray(vals);
+        }
+
+        System.out.println(ret);
+
+        return ret;
     }
 }

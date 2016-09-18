@@ -40,16 +40,16 @@ class Test {
                          { 0.00,   -2.00, 0.00,   0.00},
                          { 0.00,    0.00,   0.00,   1.00},
                          { 0.00,    2.00, 0.981,   0.00} };
-        modelMap.put("A", A);
+        modelMap.put("A", SettingsContainer.get().getA());
         Double[][] B = { {  0.00},
                          { 10.00},
                          {  0.00},
                          {-10.00} };
-        modelMap.put("B", B);
+        modelMap.put("B", SettingsContainer.get().getB());
         Double[][] C = { { 0.00, 0.00, 1.00, 0.00 } };
-        modelMap.put("C", C);
+        modelMap.put("C", SettingsContainer.get().getC());
         Double[][] D = { { 0.00 } };
-        modelMap.put("D", D);
+        modelMap.put("D", SettingsContainer.get().getD());
         HashMap<String, Double> pidMap = new HashMap<>();
 //        pidMap.put("P", new Double(50));
 //        pidMap.put("I", new Double(1));
