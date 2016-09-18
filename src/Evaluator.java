@@ -8,9 +8,9 @@ public class Evaluator {
     private double score;
     public boolean isValid;
 
-    private final double RISING_TIME_LOWER = 0.1;
-    private final double RISING_TIME_HIGHER = 0.9;
-    private final double SETTLING_MARGIN = 0.01;
+    private final double RISING_TIME_LOWER  = SettingsContainer.get().getRisingTimeLow();
+    private final double RISING_TIME_HIGHER = SettingsContainer.get().getRisingTimeHigh();
+    private final double SETTLING_MARGIN    = SettingsContainer.get().getSettlingMargin();
 
     private ArrayList<Simulator.Result> results;
 
@@ -21,7 +21,9 @@ public class Evaluator {
 
     private double calculateScore() {
         //TODO
-        return overshoot+risingTime+settlingTime;
+        return overshoot*SettingsContainer.get().getOvershoot()
+                +risingTime*SettingsContainer.get().getRisingTime()
+                +settlingTime*SettingsContainer.get().getSettlingTime();
     }
 
     private void evaluate() {

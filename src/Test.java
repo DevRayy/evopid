@@ -19,7 +19,7 @@ class Test {
 //        pid = new PIDController(1, 2, 0.5, );
 
         frame = new JFrame("Test");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 
         JPanel aPanel = new JPanel();
         aPanel.setPreferredSize(new Dimension(600, 300));
@@ -51,14 +51,14 @@ class Test {
         Double[][] D = { { 0.00 } };
         modelMap.put("D", D);
         HashMap<String, Double> pidMap = new HashMap<>();
-        pidMap.put("P", new Double(50));
-        pidMap.put("I", new Double(1));
-        pidMap.put("D", new Double(1.38));
-        int maxSamples = 5000;
-        double maxTime = 3;
+//        pidMap.put("P", new Double(50));
+//        pidMap.put("I", new Double(1));
+//        pidMap.put("D", new Double(1.38));
+        int maxSamples = SettingsContainer.get().getSamples();
+        double maxTime = SettingsContainer.get().getTime();
 
         Generator generator = new Generator(modelMap, maxSamples, maxTime);
-        pidMap = generator.generate(100);
+        pidMap = generator.generate(SettingsContainer.get().getSpecimens());
 
         DynamicModel model = new DynamicModel(modelMap, pidMap);
         Simulator simulator = new Simulator(model);
