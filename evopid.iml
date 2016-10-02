@@ -9,5 +9,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="module" module-name="jfreechart-1.0.19" />
+    <orderEntry type="library" name="jackson-all-1.9.5" level="project" />
   </component>
 </module>
