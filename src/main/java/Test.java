@@ -58,7 +58,7 @@ class Test {
         double maxTime = SettingsContainer.get().getTime();
 
         Generator generator = new Generator(modelMap, maxSamples, maxTime);
-        pidMap = generator.generate(SettingsContainer.get().getSpecimens());
+        pidMap = generator.generate(SettingsContainer.get().getPopulations(), SettingsContainer.get().getSpecimens());
 
         DynamicModel model = new DynamicModel(modelMap, pidMap);
         Simulator simulator = new Simulator(model);
