@@ -81,9 +81,8 @@ public class GuiRoot {
 
         public void actionPerformed(ActionEvent event) {
             root.getSettingsFromGui();
-            //FIXME: should start when calling some method,
-            //       not in constructor
-            root.evopid.start();
+            Thread t = new Thread(root.evopid);
+            t.start();
         }
     }
 

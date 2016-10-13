@@ -9,7 +9,7 @@ import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-class Evopid {
+class Evopid implements Runnable {
 
     private JFrame frame;
 
@@ -21,7 +21,7 @@ class Evopid {
         frame.setVisible(true);
     }
 
-    public void start() {
+    public void run() {
         XYSeries bestPIDResults = doSimulation();
 
         frame = new JFrame("Evopid");
