@@ -8,14 +8,15 @@ public class Generator {
     private int maxSamples;
     private double maxTime;
 
-    private double minGain = -50;
-    private double maxGain = 50;
-    private double minP = 0;
-    private double maxP = 1;
-    private double minI = 0;
-    private double maxI = 1;
-    private double minD = 0;
-    private double maxD = 0.1;
+    private final double FACTOR = 2;
+    private double MIN_GAIN = -50;
+    private double MAX_GAIN = 50;
+    private double MIN_P = 0;
+    private double MAX_P = 1;
+    private double MIN_I = 0;
+    private double MAX_I = 1;
+    private double MIN_D = 0;
+    private double MAX_D = 0.1;
 
     public Generator(HashMap<String, Double[][]> modelMap, int maxSamples, double maxTime) {
         this.modelMap = modelMap;
@@ -33,10 +34,10 @@ public class Generator {
             for (int i = 0; i < specimens; i++) {
                 System.out.println("\n===== Generating PID " + (i + 1) + "/" + (j+1) + " =====");
                 HashMap<String, Double> pidMap = new HashMap();
-                double initialGain = ThreadLocalRandom.current().nextDouble(minGain, maxGain);
-                pidMap.put("P", ThreadLocalRandom.current().nextDouble(minP, maxP) * initialGain);
-                pidMap.put("I", ThreadLocalRandom.current().nextDouble(minI, maxI) * initialGain);
-                pidMap.put("D", ThreadLocalRandom.current().nextDouble(minD, maxD) * initialGain);
+                double initialGain = ThreadLocalRandom.current().nextDouble(MIN_GAIN, MAX_GAIN);
+                pidMap.put("P", ThreadLocalRandom.current().nextDouble(MIN_P, MAX_P) * initialGain);
+                pidMap.put("I", ThreadLocalRandom.current().nextDouble(MIN_I, MAX_I) * initialGain);
+                pidMap.put("D", ThreadLocalRandom.current().nextDouble(MIN_D, MAX_D) * initialGain);
                 System.out.println(pidMap);
 
                 DynamicModel model = new DynamicModel(modelMap, pidMap);
@@ -67,16 +68,16 @@ public class Generator {
             double currI = best.get("I") / initialGain;
             double currD = best.get("D") / initialGain;
 
-            minGain = (minGain + initialGain) / 2;
-            System.out.println("\t\tminGain = " + minGain);
-            maxGain = (maxGain + initialGain) / 2;
-            System.out.println("\t\tmaxGain = " + maxGain);
-            minP = (minP + currP) / 2;
-            maxP = (maxP + currP) / 2;
-            minI = (minI + currI) / 2;
-            maxI = (maxI + currI) / 2;
-            minD = (minD + currD) / 2;
-            maxD = (maxD + currD) / 2;
+            MIN_GAIN = (MIN_GAIN + initialGain) / FACTOR;
+            System.out.println("\t\tMIN_GAIN = " + MIN_GAIN);
+            MAX_GAIN = (MAX_GAIN + initialGain) / FACTOR;
+            System.out.println("\t\tMAX_GAIN = " + MAX_GAIN);
+            MIN_P = (MIN_P + currP) / FACTOR;
+            MAX_P = (MAX_P + currP) / FACTOR;
+            MIN_I = (MIN_I + currI) / FACTOR;
+            MAX_I = (MAX_I + currI) / FACTOR;
+            MIN_D = (MIN_D + currD) / FACTOR;
+            MAX_D = (MAX_D + currD) / FACTOR;
         } catch (NullPointerException e) {
             //best==null
             //then do nothing and generate once more

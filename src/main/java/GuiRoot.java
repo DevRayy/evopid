@@ -8,6 +8,7 @@ import java.io.*;
 
 
 public class GuiRoot {
+    public Evopid evopid;
     private JButton startButton;
     public JPanel rootPanel;
     private JPanel settingsPanel;
@@ -30,7 +31,8 @@ public class GuiRoot {
     private JButton loadButton;
     private JButton saveButton;
 
-    public GuiRoot() {
+    public GuiRoot(Evopid evopid) {
+        this.evopid = evopid;
         startButton.addActionListener(new StartBtnClick(this));
         saveButton.addActionListener(new SaveBtnClick(this));
         loadButton.addActionListener(new LoadBtnClick(this));
@@ -77,12 +79,11 @@ public class GuiRoot {
         GuiRoot root;
         public StartBtnClick(GuiRoot root) {this.root=root;}
 
-        @Override
         public void actionPerformed(ActionEvent event) {
             root.getSettingsFromGui();
             //FIXME: should start when calling some method,
             //       not in constructor
-            new Test();
+            root.evopid.start();
         }
     }
 
@@ -90,7 +91,6 @@ public class GuiRoot {
         GuiRoot root;
         public SaveBtnClick(GuiRoot root) {this.root=root;}
 
-        @Override
         public void actionPerformed(ActionEvent event) {
             root.getSettingsFromGui();
             root.saveSettingsToJSON();
@@ -101,7 +101,6 @@ public class GuiRoot {
         GuiRoot root;
         public LoadBtnClick(GuiRoot root) {this.root=root;}
 
-        @Override
         public void actionPerformed(ActionEvent event) {
             root.getSettingsFromJSON();
         }
