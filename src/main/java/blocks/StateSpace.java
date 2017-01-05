@@ -14,11 +14,6 @@ public class StateSpace extends Block {
     private MatrixToValue mtxToVal;
 
     public StateSpace(Matrix A, Matrix B, Matrix C, Matrix D, Block input) {
-        Double[][] init = { {  0.00},
-                { 0.00},
-                {  1.00},
-                {0.00} };
-        Matrix initMtx = new Matrix(init);
         this.inputBlock = input;
         valToMtx = new ValueToMatrix(input);
         this.A = A;

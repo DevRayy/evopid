@@ -28,7 +28,10 @@ class Evopid implements Runnable {
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         JPanel aPanel = new JPanel();
         aPanel.setPreferredSize(new Dimension(600, 300));
-        ChartPanel chartPanel = new ChartPanel(createChart(bestPIDResults));
+        XYSeries constant = new XYSeries("Wymuszenie skokowe");
+        constant.add(0, 1);
+        constant.add(SettingsContainer.get().getTime(), 1);
+        ChartPanel chartPanel = new ChartPanel(createChart(bestPIDResults, constant));
         chartPanel.setPreferredSize(new Dimension(600, 300));
         frame.getContentPane().add(chartPanel);
         frame.pack();
@@ -48,28 +51,33 @@ class Evopid implements Runnable {
         Generator generator = new Generator(modelMap, maxSamples, maxTime);
         pidMap = generator.generate(SettingsContainer.get().getPopulations(), SettingsContainer.get().getSpecimens());
 
+//        pidMap.put("P", 1.0);
+//        pidMap.put("I", 0.0);
+//        pidMap.put("D", 0.0);
         DynamicModel model = new DynamicModel(modelMap, pidMap);
         Simulator simulator = new Simulator(model);
         simulator.simulate(maxSamples, maxTime);
         ArrayList<Simulator.Result> results = simulator.getResults();
         Evaluator evaluator = new Evaluator(results);
-        DecimalFormat df = new DecimalFormat("#.00");
+//        DecimalFormat df = new DecimalFormat("#.00");
         System.out.println("\n\n===== BEST PID FOUND =====");
         System.out.println(pidMap);
-        System.out.println("Overshoot: " + df.format(evaluator.getOvershoot()*100) + "%");
-        System.out.println("Rising time: " + evaluator.getRisingTime() + " seconds");
-        System.out.println("Settling time: " + evaluator.getSettlingTime() + " seconds");
-        System.out.println("SCORE: " + evaluator.getScore());
+        generator.printEvaluatorStats(evaluator);
+//        System.out.println("Overshoot: " + df.format(evaluator.getOvershoot()*100) + "%");
+//        System.out.println("Rising time: " + evaluator.getRisingTime() + " seconds");
+//        System.out.println("Settling time: " + evaluator.getSettlingTime() + " seconds");
+//        System.out.println("SCORE: " + evaluator.getScore());
         return simulator.getXYSeries();
     }
 
-    private JFreeChart createChart(XYSeries series) {
+    private JFreeChart createChart(XYSeries series, XYSeries constant) {
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
+        dataset.addSeries(constant);
         JFreeChart timechart = ChartFactory.createXYLineChart(
-                "XY Chart", // Title
-                "x",         // X-axis Label
-                "y",       // Y-axis Label
+                "Odpowiedz ukladu na skok jednostkowy", // Title
+                "Czas (s)",         // X-axis Label
+                "Wartosc odpowiedzi",       // Y-axis Label
                 dataset,        // Dataset
                 PlotOrientation.VERTICAL,
                 true,          // Show legend

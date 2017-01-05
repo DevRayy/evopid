@@ -8,7 +8,7 @@ public class Simulator {
     private double time;
 
     private ArrayList<Result> results = new ArrayList();
-    private XYSeries xySeries = new XYSeries("Model output");
+    private XYSeries xySeries = new XYSeries("Odpowiedz ukladu");
 
     public Simulator(DynamicModel model) {
         this.model = model;

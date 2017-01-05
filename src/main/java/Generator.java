@@ -84,12 +84,12 @@ public class Generator {
         }
     }
 
-    private void printEvaluatorStats(Evaluator evaluator) {
-        DecimalFormat df = new DecimalFormat("#.00");
+    public void printEvaluatorStats(Evaluator evaluator) {
+        DecimalFormat df = new DecimalFormat("0.00");
         System.out.println("Overshoot: " + df.format(evaluator.getOvershoot() * 100) + "%");
-        System.out.println("Rising time: " + evaluator.getRisingTime() + " seconds");
-        System.out.println("Settling time: " + evaluator.getSettlingTime() + " seconds");
-        System.out.println("SCORE: " + evaluator.getScore());
+        System.out.println("Rising time: " + df.format(evaluator.getRisingTime()) + " seconds");
+        System.out.println("Settling time: " + df.format(evaluator.getSettlingTime()) + " seconds");
+        System.out.println("SCORE: " + df.format(evaluator.getScore()));
     }
 
 }
