@@ -1,6 +1,7 @@
+package ee;
+
 import javax.swing.*;
 import java.awt.*;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,23 +13,27 @@ import org.jfree.data.xy.XYSeriesCollection;
 class Evopid implements Runnable {
 
     private JFrame frame;
+    GuiRoot guiRoot;
 
     public Evopid() {
         JFrame frame = new JFrame("Evopid");
-        frame.setContentPane(new GuiRoot(this).rootPanel);
+        guiRoot = new GuiRoot(this);
+        frame.setContentPane(guiRoot.rootPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
     }
 
     public void run() {
+        validateSettings();
+
         XYSeries bestPIDResults = doSimulation();
 
         frame = new JFrame("Evopid");
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         JPanel aPanel = new JPanel();
         aPanel.setPreferredSize(new Dimension(600, 300));
-        XYSeries constant = new XYSeries("Wymuszenie skokowe");
+        XYSeries constant = new XYSeries("Step excitation");
         constant.add(0, 1);
         constant.add(SettingsContainer.get().getTime(), 1);
         ChartPanel chartPanel = new ChartPanel(createChart(bestPIDResults, constant));
@@ -48,26 +53,21 @@ class Evopid implements Runnable {
         int maxSamples = SettingsContainer.get().getSamples();
         double maxTime = SettingsContainer.get().getTime();
 
-        Generator generator = new Generator(modelMap, maxSamples, maxTime);
-        pidMap = generator.generate(SettingsContainer.get().getPopulations(), SettingsContainer.get().getSpecimens());
-
-//        pidMap.put("P", 1.0);
-//        pidMap.put("I", 0.0);
-//        pidMap.put("D", 0.0);
-        DynamicModel model = new DynamicModel(modelMap, pidMap);
-        Simulator simulator = new Simulator(model);
-        simulator.simulate(maxSamples, maxTime);
-        ArrayList<Simulator.Result> results = simulator.getResults();
-        Evaluator evaluator = new Evaluator(results);
-//        DecimalFormat df = new DecimalFormat("#.00");
-        System.out.println("\n\n===== BEST PID FOUND =====");
-        System.out.println(pidMap);
-        generator.printEvaluatorStats(evaluator);
-//        System.out.println("Overshoot: " + df.format(evaluator.getOvershoot()*100) + "%");
-//        System.out.println("Rising time: " + evaluator.getRisingTime() + " seconds");
-//        System.out.println("Settling time: " + evaluator.getSettlingTime() + " seconds");
-//        System.out.println("SCORE: " + evaluator.getScore());
-        return simulator.getXYSeries();
+        try {
+            Generator generator = new Generator(modelMap, maxSamples, maxTime, guiRoot);
+            pidMap = generator.generate(SettingsContainer.get().getPopulations(), SettingsContainer.get().getSpecimens());
+            DynamicModel model = new DynamicModel(modelMap, pidMap);
+            Simulator simulator = new Simulator(model);
+            simulator.simulate(maxSamples, maxTime);
+            ArrayList<Simulator.Result> results = simulator.getResults();
+            Evaluator evaluator = new Evaluator(results);
+            System.out.println("\n\n===== BEST PID FOUND =====");
+            generator.printEvaluatorStats(evaluator, pidMap);
+            return simulator.getXYSeries();
+        } catch (IllegalArgumentException e) {
+            Utils.showErrorMessage(e.getMessage());
+            throw e;
+        }
     }
 
     private JFreeChart createChart(XYSeries series, XYSeries constant) {
@@ -75,9 +75,9 @@ class Evopid implements Runnable {
         dataset.addSeries(series);
         dataset.addSeries(constant);
         JFreeChart timechart = ChartFactory.createXYLineChart(
-                "Odpowiedz ukladu na skok jednostkowy", // Title
-                "Czas (s)",         // X-axis Label
-                "Wartosc odpowiedzi",       // Y-axis Label
+                "Step response", // Title
+                "Time (s)",         // X-axis Label
+                "Output",       // Y-axis Label
                 dataset,        // Dataset
                 PlotOrientation.VERTICAL,
                 true,          // Show legend
@@ -85,6 +85,31 @@ class Evopid implements Runnable {
                 false          // Generate URLs
         );
         return timechart;
+    }
+
+    private void validateSettings() {
+        SettingsContainer sc = SettingsContainer.get();
+        try {
+            assert sc.getSamples() > 0;
+            assert sc.getTime() > 0;
+            assert sc.getPopulations() > 0;
+            assert sc.getSpecimens() > 0;
+            assert sc.getRisingTimeLow() >= 0;
+            assert sc.getRisingTimeLow() < 1;
+            assert sc.getRisingTimeHigh() <= 1;
+            assert sc.getRisingTimeHigh() > 0;
+            assert sc.getRisingTimeLow() < sc.getRisingTimeHigh();
+            assert sc.getSettlingMargin() > 0;
+            assert sc.getSettlingMargin() < 100;
+            assert sc.getOvershoot() >= 0;
+            assert sc.getRisingTime() >= 0;
+            assert sc.getSettlingTime() >= 0;
+            if(sc.isLimitOvershootEnabled())
+                assert sc.getLimitOvershootValue() >=0;
+
+        } catch (AssertionError e) {
+            Utils.showErrorMessage("Invalid settings");
+        }
     }
 
 }

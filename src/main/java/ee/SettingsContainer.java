@@ -1,9 +1,10 @@
-//import com.fasterxml.jackson.annotation.JsonIgnore;
+package ee;//import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.oracle.webservices.internal.api.databinding.DatabindingMode;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.codehaus.jackson.annotate.JsonIgnore;
+
+import java.text.ParseException;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +17,7 @@ public class SettingsContainer {
     private double time;
 
     @JsonProperty(value = "populations")
-    private int populations;        //TODO
+    private int populations;
 
     @JsonProperty(value = "specimens")
     private int specimens;
@@ -38,6 +39,12 @@ public class SettingsContainer {
 
     @JsonProperty(value = "settlingTime")
     private double settlingTime;
+
+    @JsonProperty(value = "limitOvershootValue")
+    private double limitOvershootValue;
+
+    @JsonProperty(value = "limitOvershootEnabled")
+    private boolean limitOvershootEnabled;
 
     @JsonProperty(value = "A")
     private Double[][] A;           //TODO
@@ -144,6 +151,22 @@ public class SettingsContainer {
         this.settlingTime = settlingTime;
     }
 
+    public double getLimitOvershootValue() {
+        return limitOvershootValue;
+    }
+
+    public void setLimitOvershootValue(double limitOvershootValue) {
+        this.limitOvershootValue = limitOvershootValue;
+    }
+
+    public boolean isLimitOvershootEnabled() {
+        return limitOvershootEnabled;
+    }
+
+    public void setLimitOvershootEnabled(boolean limitOvershootEnabled) {
+        this.limitOvershootEnabled = limitOvershootEnabled;
+    }
+
     @JsonIgnore public String getAstring() {
         return parseMatrixToString(A);
     }
@@ -201,17 +224,22 @@ public class SettingsContainer {
     }
 
     private Double[][] parseStringToMatrix(String base) {
-        base.replace(" ", "").replace("\n", "");
-        String[] rows = base.split(";");
-        int rowsCount = rows.length;
-        int columnsCount = rows[0].split(",").length;
-        Double[][] ret = new Double[rowsCount][columnsCount];
-        for(int i=0; i<rowsCount; i++) {
-            String[] vals = rows[i].split(",");
-            ret[i] = stringArrayToDoubleArray(vals);
-        }
+        try {
+            base.replace(" ", "").replace("\n", "");
+            String[] rows = base.split(";");
+            int rowsCount = rows.length;
+            int columnsCount = rows[0].split(",").length;
+            Double[][] ret = new Double[rowsCount][columnsCount];
+            for (int i = 0; i < rowsCount; i++) {
+                String[] vals = rows[i].split(",");
+                ret[i] = stringArrayToDoubleArray(vals);
+            }
 
-        return ret;
+            return ret;
+        } catch (Exception e) {
+            ee.Utils.showErrorMessage("Could not parse string to matrix");
+        }
+        return null;
     }
 
     private String doubleArrayToString(Double[] array) {

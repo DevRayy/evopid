@@ -1,3 +1,6 @@
+package ee;
+
+import com.sun.xml.internal.ws.api.config.management.policy.ManagementAssertion;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import javax.swing.*;
@@ -5,6 +8,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
+import java.util.Set;
 
 
 public class GuiRoot {
@@ -30,12 +34,17 @@ public class GuiRoot {
     private JTextArea logArea;
     private JButton loadButton;
     private JButton saveButton;
+    private JProgressBar progressBar;
+    private JCheckBox limitOvershootCheckbox;
+    private JTextField limitOvershootField;
 
     public GuiRoot(Evopid evopid) {
         this.evopid = evopid;
         startButton.addActionListener(new StartBtnClick(this));
         saveButton.addActionListener(new SaveBtnClick(this));
         loadButton.addActionListener(new LoadBtnClick(this));
+        progressBar.setMinimum(0);
+        progressBar.setValue(0);
         JTextAreaOutputStream out = new JTextAreaOutputStream (logArea);
         System.setOut (new PrintStream(out, true));
     }
@@ -51,10 +60,19 @@ public class GuiRoot {
         SettingsContainer.get().setOvershoot(Double.parseDouble(overshootField.getText()));
         SettingsContainer.get().setRisingTime(Double.parseDouble(risingTime.getText()));
         SettingsContainer.get().setSettlingTime(Double.parseDouble(settlingTimeField.getText()));
+        SettingsContainer.get().setLimitOvershootValue(Double.parseDouble(limitOvershootField.getText()));
+        SettingsContainer.get().setLimitOvershootEnabled(limitOvershootCheckbox.isSelected());
+
         SettingsContainer.get().setAstring(matrixA.getText());
         SettingsContainer.get().setBstring(matrixB.getText());
         SettingsContainer.get().setCstring(matrixC.getText());
         SettingsContainer.get().setDstring(matrixD.getText());
+        progressBar.setMaximum(SettingsContainer.get().getPopulations()*SettingsContainer.get().getSpecimens());
+    }
+
+    public void incrementProgressBar() {
+        int value = progressBar.getValue();
+        progressBar.setValue(++value);
     }
 
     public void setGuiFromSettings() {
@@ -69,10 +87,13 @@ public class GuiRoot {
         overshootField.setText(sc.getOvershoot()+"");
         risingTime.setText(sc.getRisingTime()+"");
         settlingTimeField.setText(sc.getSettlingTime()+"");
+        limitOvershootField.setText(sc.getLimitOvershootValue()+"");
+        limitOvershootCheckbox.setSelected(sc.isLimitOvershootEnabled());
         matrixA.setText(sc.getAstring());
         matrixB.setText(sc.getBstring());
         matrixC.setText(sc.getCstring());
         matrixD.setText(sc.getDstring());
+        progressBar.setMaximum(SettingsContainer.get().getPopulations()*SettingsContainer.get().getSpecimens());
     }
 
     public class StartBtnClick implements ActionListener {
@@ -81,6 +102,7 @@ public class GuiRoot {
 
         public void actionPerformed(ActionEvent event) {
             root.getSettingsFromGui();
+            root.progressBar.setValue(0);
             Thread t = new Thread(root.evopid);
             t.start();
         }
