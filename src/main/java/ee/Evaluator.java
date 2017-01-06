@@ -10,8 +10,8 @@ public class Evaluator {
     private double score;
     public boolean isValid;
 
-    private final double RISING_TIME_LOWER  = SettingsContainer.get().getRisingTimeLow();
-    private final double RISING_TIME_HIGHER = SettingsContainer.get().getRisingTimeHigh();
+    private final double RISING_TIME_LOWER  = SettingsContainer.get().getRisingTimeLow()/100.0;
+    private final double RISING_TIME_HIGHER = SettingsContainer.get().getRisingTimeHigh()/100.0;
     private final double SETTLING_MARGIN    = SettingsContainer.get().getSettlingMargin()/100.0;
 
     private ArrayList<Simulator.Result> results;

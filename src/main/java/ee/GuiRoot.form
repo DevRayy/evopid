@@ -136,7 +136,7 @@
               <gridbag weightx="0.0" weighty="1.0"/>
             </constraints>
             <properties>
-              <text value="Rising time low"/>
+              <text value="Rising time low (%)"/>
             </properties>
           </component>
           <component id="54562" class="javax.swing.JLabel">
@@ -145,7 +145,7 @@
               <gridbag weightx="0.0" weighty="1.0"/>
             </constraints>
             <properties>
-              <text value="Rising time high"/>
+              <text value="Rising time high (%)"/>
             </properties>
           </component>
           <component id="9a801" class="javax.swing.JLabel">
@@ -201,7 +201,7 @@
               <gridbag weightx="1.0" weighty="1.0"/>
             </constraints>
             <properties>
-              <text value="0.1"/>
+              <text value="10"/>
             </properties>
           </component>
           <component id="6f456" class="javax.swing.JTextField" binding="risingTimeHighField">
@@ -212,7 +212,7 @@
               <gridbag weightx="1.0" weighty="1.0"/>
             </constraints>
             <properties>
-              <text value="0.9"/>
+              <text value="90"/>
             </properties>
           </component>
           <component id="2f02f" class="javax.swing.JTextField" binding="settlingMarginField">
