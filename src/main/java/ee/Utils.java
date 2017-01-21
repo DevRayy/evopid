@@ -6,5 +6,6 @@ public class Utils {
         ErrorWindow errorWindow = new ErrorWindow(message);
         errorWindow.pack();
         errorWindow.setVisible(true);
+        Main.thread.stop();
     }
 }

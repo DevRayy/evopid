@@ -1,9 +1,10 @@
 package ee;
 
 public class Main {
-    public static void main(String[] args) {
 
-//        new Evopid();
+    public static Thread thread;
+
+    public static void main(String[] args) {
         try {
             ClassLoader loader = ClassLoader.getSystemClassLoader();
             loader.setDefaultAssertionStatus(true);

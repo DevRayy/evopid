@@ -103,8 +103,8 @@ public class GuiRoot {
         public void actionPerformed(ActionEvent event) {
             root.getSettingsFromGui();
             root.progressBar.setValue(0);
-            Thread t = new Thread(root.evopid);
-            t.start();
+            Main.thread = new Thread(root.evopid);
+            Main.thread.start();
         }
     }
 

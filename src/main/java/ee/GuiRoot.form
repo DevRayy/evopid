@@ -8,9 +8,9 @@
     <properties>
       <alignmentX value="0.0"/>
       <alignmentY value="0.0"/>
-      <minimumSize width="600" height="350"/>
+      <minimumSize width="750" height="350"/>
       <opaque value="true"/>
-      <preferredSize width="600" height="350"/>
+      <preferredSize width="750" height="350"/>
     </properties>
     <border type="line"/>
     <children>
@@ -58,7 +58,7 @@
               <gridbag weightx="0.0" weighty="1.0"/>
             </constraints>
             <properties>
-              <text value="Time"/>
+              <text value="Time (s)"/>
             </properties>
           </component>
           <component id="84bdd" class="javax.swing.JTextField" binding="timeField">
@@ -181,7 +181,7 @@
               <gridbag weightx="0.0" weighty="1.0"/>
             </constraints>
             <properties>
-              <text value="Rising time"/>
+              <text value="Rising time (s)"/>
             </properties>
           </component>
           <component id="620d6" class="javax.swing.JLabel">
@@ -190,7 +190,7 @@
               <gridbag weightx="0.0" weighty="1.0"/>
             </constraints>
             <properties>
-              <text value="Settling time"/>
+              <text value="Settling time (s)"/>
             </properties>
           </component>
           <component id="e3b9" class="javax.swing.JTextField" binding="risingTimeLowField">

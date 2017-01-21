@@ -95,8 +95,8 @@ class Evopid implements Runnable {
             assert sc.getPopulations() > 0;
             assert sc.getSpecimens() > 0;
             assert sc.getRisingTimeLow() >= 0;
-            assert sc.getRisingTimeLow() < 1;
-            assert sc.getRisingTimeHigh() <= 1;
+            assert sc.getRisingTimeLow() < 100;
+            assert sc.getRisingTimeHigh() <= 100;
             assert sc.getRisingTimeHigh() > 0;
             assert sc.getRisingTimeLow() < sc.getRisingTimeHigh();
             assert sc.getSettlingMargin() > 0;
